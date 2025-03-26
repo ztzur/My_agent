@@ -21,7 +21,7 @@ def aggregate_batch_results_to_df(subjects_df: pd.DataFrame, programs_df: pd.Dat
                 with Pool(processes=min(cpu_count() - 3, len(tests_list))) as pool:
                     results = pool.starmap(ask_llm, new_list)
             else:
-                results = ask_llm(tests_list[0], index, sub_program_planes, sub_subject)
+                results = [ask_llm(tests_list[0], index, sub_program_planes, sub_subject)]
 
             row_dict = {
                 'program_number': row['מספר תוכנית'],

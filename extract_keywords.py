@@ -7,7 +7,7 @@ from langchain_core.output_parsers import JsonOutputParser
 
 
 sub_sal_approved = pd.read_csv(c.subjects_path)
-llm = GefenAiTest.connect_to_llm(endpoint='azure')
+llm = utils.connect_to_llm(endpoint='azure')
 
 content_prompt = PromptTemplate.from_template(template=prompts.ExtractKeyWords)
 llm_chain = content_prompt | llm | JsonOutputParser()

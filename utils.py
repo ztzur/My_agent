@@ -47,8 +47,8 @@ def ask_llm(test_name, index, program_df, sub_subject) -> dict:
             temp_chain = temp_prompt | llm | JsonOutputParser()
             ans = temp_chain.invoke({k: v for k, v in prompt_params.items()})
         except OutputParserException as e:
-            with open(f'{c.errors}/{program_row['מספר תוכנית']}_{program_row['תת סל']}', 'w') as f:
-                f.write(f'test: {test_name}\nprogram_name: {program_row['שם תוכנית']}\nsub subject: {program_row['תת סל']}')
+            with open(f"{c.errors}/{program_row['מספר תוכנית']}_{program_row['תת סל']}", 'w') as f:
+                f.write(f"test: {test_name}\nprogram_name: {program_row['שם תוכנית']}\nsub subject: {program_row['תת סל']}")
             return {}
 
     ans_plus_names = {f'{test_name}_{k}': v for k, v in ans.items()}
@@ -64,7 +64,7 @@ def create_tests_dict(test: str) -> dict:
     with open(f'{c.yaml}/{test}.yaml', 'r', encoding='utf-8-sig') as file:
         total_dict = yaml.safe_load(file)
 
-    with open(f'{c.prompts}/{total_dict['prompt']}', 'r') as p_file:
+    with open(f"{c.prompts}/{total_dict['prompt']}", 'r', encoding="utf-8-sig") as p_file:
         total_dict['prompt'] = p_file.read()
 
     return total_dict
@@ -93,8 +93,8 @@ def connect_to_llm(endpoint: str = Literal["google", "azure"],
 
         return chat_llm
 
-    elif endpoint in c.ollama_models:
-        return OllamaLLM(model=endpoint)
+    # elif endpoint in c.ollama_models:
+    #     return OllamaLLM(model=endpoint)
 
     else:
         raise TypeError(

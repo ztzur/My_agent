@@ -12,12 +12,12 @@ subjects_path = os.path.join(_local_path, os.path.abspath('data/sub_sal_approved
 programs_path = os.path.join(_local_path, os.path.abspath('data/gefen_programs_limited_data.csv'))
 final_results = os.path.join(_local_path, os.path.abspath('data/outputs/final/final_results.csv'))
 drop_iteration = 10
-row_limit = 3
-remove_drops = None
+row_limit = 2
+remove_drops = False
 
 # ---------------------------- LLM ----------------------------- #
 endpoint = 'google'
-ollama_models = [i.split()[0] for i in subprocess.check_output(['ollama', 'list']).decode('utf-8').split('\n')[1:] if i]
+# ollama_models = [i.split()[0] for i in subprocess.check_output(['ollama', 'list']).decode('utf-8').split('\n')[1:] if i]
 
 # ---------------------------- Path ----------------------------- #
 yaml = os.path.join(_local_path, os.path.abspath('configs/tests/yaml_configs'))
