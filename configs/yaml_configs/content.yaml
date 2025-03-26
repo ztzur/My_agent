@@ -1,0 +1,7 @@
+prompt: /Users/zivtzur/PycharmProjects/My_agent/configs/prompts/content.txt
+program_params:
+  objective: מטרה מרכזית
+  summary: תקציר תוכנית
+subject_params:
+  definition: Description
+special_params: ''

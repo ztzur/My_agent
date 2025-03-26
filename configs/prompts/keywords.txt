@@ -1,0 +1,64 @@
+```json
+{{
+  "score": "[1, 2, 3, 4, or 5]",
+  "justification": "[Explanation in Hebrew of how the score was calculated, including the analysis of mandatory and general keywords and their presence/absence in the program goal and description. Be specific about the connections and any gaps or areas for improvement.]"
+}}
+```
+
+**Instructions:**
+
+You will be provided with the following information:
+
+1.  **Mandatory Keywords:** A list of keywords that are absolutely essential to the program's alignment with a specific goal.
+2.  **General Keywords:** A list of additional keywords that are relevant to the program but are not considered mandatory.
+3.  **Program Main Goal:** A concise statement describing the primary objective of the program.
+4.  **Program General Description:** A brief overview of the program's activities and intended outcomes.
+
+Your task is to analyze the program based on its goal and general description and determine how well it aligns with the provided keywords. You will calculate a weighted score, giving 70% weight to the mandatory keywords and 30% weight to the general keywords.
+
+**Scoring Method:**
+
+1.  **Mandatory Keyword Score:**
+    * Determine the degree to which the mandatory keywords are present and relevant in the program goal and description.
+    * Assign a score from 1 to 5, where:
+        * 1 = Very low alignment
+        * 5 = Very high alignment
+2.  **General Keyword Score:**
+    * Determine the degree to which the general keywords are present and relevant in the program goal and description.
+    * Assign a score from 1 to 5, using the same scale as above.
+3.  **Weighted Score Calculation:**
+    * Calculate the weighted score using the following formula:
+        * Weighted Score = (Mandatory Keyword Score * 0.7) + (General Keyword Score * 0.3)
+    * Round the weighted score to the nearest whole number (1-5).
+
+**Output Format:**
+
+Return your answer in JSON format exactly as shown above.
+
+* `score`: This field should contain the calculated weighted score (1-5).
+* `justification`: This field should contain an explanation in Hebrew of how the score was calculated. This explanation should detail the analysis of both mandatory and general keywords and their presence or absence in the program goal and description.
+
+**Example Input (Illustrative):**
+
+```
+Mandatory Keywords: ["מוטיבציה", "תלמידים"]
+General Keywords: ["חקר מדעי", "תחרויות מדעיות", "חשיבה ביקורתית"]
+Program Main Goal: לעודד תלמידים לחקור מדעים.
+Program General Description: התכנית תקיים סדנאות חקר ועידוד השתתפות בתחרויות מדעיות.
+```
+
+**Example Output (Illustrative - The actual content would depend on the input):**
+
+```json
+{{
+  "score": "5",
+  "justification": "התוכנית מתאימה מאוד למילות המפתח. מילות החובה 'מוטיבציה' ו'תלמידים' מופיעות באופן ישיר במטרה ובתיאור התוכנית. מילות המפתח הכלליות 'חקר מדעי' ו'תחרויות מדעיות' מופיעות גם הן בתיאור. המילה 'חשיבה ביקורתית' אינה מופיעה ישירות, אך ניתן להסיק שהסדנאות והתחרויות מעודדות חשיבה זו. לכן, מילות החובה קיבלו ציון 5 ומילות המפתח הכלליות קיבלו ציון 5. (5*0.7)+(5*0.3)=5. ציון סופי 5."
+}}
+```
+
+**Input Data**
+
+Mandatory Keywords: {mandatory_keywords}
+General Keywords:  {general_keywords}
+Program Main Goal: {program_goal}
+Program General Description: {program_description}

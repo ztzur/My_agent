@@ -1,0 +1,53 @@
+**Instructions:**
+
+You will be provided with three pieces of information:
+
+1. **Sub-Program Objective:** A concise statement describing what the sub-program aims to achieve.
+2. **Sub-Program Summary:** A brief overview of the sub-program, including its key activities and intended outcomes.
+3. **Main Program Definition:** A central definition of the overarching program that the sub-program is intended to support. This definition outlines the core purpose and goals of the main program.
+
+Your task is to analyze whether the **Sub-Program Objective** aligns with the **Main Program Definition**. Consider the **Sub-Program Summary** as context to aid your analysis.
+
+**Scoring:**
+
+Assign a score based on the following scale:
+
+* **5 - Perfect Fit:** The Sub-Program Objective is perfectly aligned with the Main Program Definition. The sub-program directly and comprehensively contributes to the core purpose and goals of the main program. The Sub-Program Summary clearly demonstrates this strong alignment.
+* **4 - Good Fit:** The Sub-Program Objective aligns well with the Main Program Definition. The sub-program contributes significantly to the main program's goals, although there might be minor areas of less direct alignment or some nuances not fully addressed. The Sub-Program Summary supports this assessment.
+* **3 - Partial Fit:** The Sub-Program Objective aligns with some aspects of the Main Program Definition, but not all. There might be areas of misalignment, or the connection is not clearly established. The Sub-Program Summary may highlight some alignment but also suggest potential gaps or areas where the connection could be stronger.
+* **2 - Poor Fit:** The Sub-Program Objective has a weak connection to the Main Program Definition. While there might be some tangential relationship, the sub-program does not effectively contribute to the main program's core goals. The Sub-Program Summary will likely reflect this weak connection.
+* **1 - No Fit:** The Sub-Program Objective does not align with the Main Program Definition. The sub-program's goals and activities are unrelated or even contradictory to the main program's purpose. The Sub-Program Summary will demonstrate a lack of connection to the main program's goals.
+
+**Output Format:**
+
+Provide your response in the following json format and make sure the json is valid:
+
+```
+{{json
+    "Score": [Your Score (5, 4, 3, 2, or 1)],
+    "Justification": [A concise explanation of your score, referencing specific elements from the Sub-Program Objective, Sub-Program Summary, and Main Program Definition. Explain *why* you chose the score you did, providing evidence for your assessment. Be specific about which aspects align and which do not.]
+}}
+```
+
+**Example Input:**
+
+```
+Sub-Program Objective: To improve the digital literacy skills of senior citizens.
+Sub-Program Summary: This sub-program will offer free computer classes to senior citizens, focusing on internet safety, email communication, and basic software applications.
+Main Program Definition: To bridge the digital divide and ensure equitable access to technology and digital skills for all citizens.
+```
+
+**Example Output:**
+
+```
+{{json
+    "Score": "5",
+    "Justification": "The Sub-Program Objective directly and comprehensively addresses a key component of the Main Program Definition, which is bridging the digital divide by improving digital skills. The Sub-Program Summary further reinforces this alignment by detailing activities that specifically target improving digital skills (computer classes focusing on internet safety, email, and software) for a specific demographic (senior citizens) often affected by the digital divide.  The sub-program is a perfect fit as it directly contributes to the core goal of the main program."
+}}
+```
+
+**Input Data:**
+
+Sub-Program Objective: {objective}
+Sub-Program Summary: {summary}
+Main Program Definition: {definition}

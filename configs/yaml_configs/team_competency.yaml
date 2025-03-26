@@ -1,0 +1,7 @@
+prompt: /Users/zivtzur/PycharmProjects/My_agent/configs/prompts/team_competency.txt
+program_params:
+  objective: מטרה מרכזית
+  summary: תקציר תוכנית
+subject_params:
+  conditions: Min_conditions
+special_params: ''

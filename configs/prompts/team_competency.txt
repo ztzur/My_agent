@@ -1,0 +1,75 @@
+**Instructions:**
+
+You will be provided with three pieces of information:
+
+1. **Sub-Program Objective:** A concise statement describing what the sub-program aims to achieve.
+2. **Sub-Program Summary:** A brief overview of the sub-program, including its key activities, resources, and intended outcomes.
+3. **Main Program Threshold Conditions:** A list of specific requirements or criteria that *must* be met for a sub-program to be considered aligned with the main program. These conditions often relate to resource allocation, staffing qualifications, target demographics, or other essential elements. They are *necessary* but not necessarily *sufficient* for full alignment.
+
+Your task is to analyze whether the **Sub-Program Objective** and **Sub-Program Summary** describe conditions that satisfy the **Main Program Threshold Conditions**.
+
+**Scoring:**
+
+Assign a score based on the overlap and alignment of the sub-program conditions with the main program's threshold conditions:
+
+* **5 - Identical Requirements:** The Sub-Program Objective and Summary explicitly state conditions that are identical to, or fully encompass, all of the Main Program Threshold Conditions. The sub-program clearly and completely meets all necessary requirements.
+* **4 - Most Requirements Overlap:** The Sub-Program Objective and Summary mention conditions that overlap with most (but not all) of the Main Program Threshold Conditions.  There might be minor discrepancies or a few missing details, but the core requirements are addressed.
+* **3 - Partially Overlapping Requirements:** The Sub-Program Objective and/or Summary mention conditions that partially overlap with the Main Program Threshold Conditions. Some requirements are met, but others might be missing, less specific, or not fully aligned. There's a degree of compliance, but gaps exist.
+* **2 - Few Overlapping Requirements:** The Sub-Program Objective and/or Summary mention conditions that overlap with only a few of the Main Program Threshold Conditions.  Many requirements are not addressed or are significantly different.  The connection to the threshold conditions is weak.
+* **1 - Completely Different Requirements:** The Sub-Program Objective and Summary describe conditions that are entirely different from the Main Program Threshold Conditions. There is little to no alignment with the required criteria.
+
+**Output Format:**
+
+Provide your response in the following json format and make sure the json is valid:
+
+```json
+{{
+    "Score": [Your Score (5, 4, 3, 2, or 1)],
+    "Justification": [A concise explanation of your score, referencing specific elements from the Sub-Program Objective, Sub-Program Summary, and Main Program Threshold Conditions. Clearly state which threshold conditions are met, partially met, or not met at all. Explain *why* you chose the score you did, providing evidence for your assessment.  Be specific about which requirements overlap and which do not.]
+}}
+```
+
+**Example Input:**
+
+```
+Sub-Program Objective: To train community health workers in providing mental health first aid.
+Sub-Program Summary: This sub-program will offer a 40-hour training course, led by certified instructors, to community health workers. Participants will receive certification upon completion.  The training will cover modules A, B, and C.
+Main Program Threshold Conditions:
+*   Trainers must be certified in the specific training curriculum.
+*   Training must be at least 30 hours in duration.
+*   Participants must receive formal certification upon completion of training.
+*   The training must cover modules A, B, and C.
+```
+
+**Example Output:**
+
+```json
+{{
+    "Score": "5",
+    "Justification": "The Sub-Program Summary clearly states that the training will be led by "certified instructors," fulfilling the first threshold condition. The training duration is specified as "40 hours," exceeding the minimum requirement of "30 hours," thus satisfying the second condition. The summary mentions that participants will "receive certification upon completion," matching the third threshold condition. Finally, the training covering modules A, B, and C fulfills the last threshold condition. Since all threshold conditions are met identically, the score is 5."
+}}
+```
+
+**Another Example Input:**
+
+```
+Sub-Program Objective:  Improve access to educational resources for underprivileged youth.
+Sub-Program Summary: This sub-program will provide online tutoring sessions to students in low-income neighborhoods.  Tutors will have some college experience.
+Main Program Threshold Conditions:
+*   Tutors must have a bachelor's degree in the subject they are tutoring.
+*   Tutoring must be provided in person at designated community centers.
+*   The program must offer resources in at least three different academic subjects.
+```
+
+**Another Example Output:**
+
+```json
+{{
+    "Score": "2",
+    "Justification": "The Sub-Program Summary describes "online tutoring sessions," which does not meet the requirement of "in-person" tutoring at "designated community centers." The requirement of tutors having a "bachelor's degree" is not met by "some college experience." The Sub-Program information doesn't mention the range of subjects covered. Only the general concept of "educational resources" overlaps, but not the specific requirements. Therefore, the score is 2."
+```
+**Input Data**
+
+Sub-Program Objective: {objective}
+Sub-Program Summary: {summary}
+Main Program Threshold conditions: {conditions}

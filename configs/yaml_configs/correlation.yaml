@@ -1,0 +1,11 @@
+program_params:
+  objective: מטרה מרכזית
+  summary: תקציר תוכנית
+subject_params: ''
+special_params:
+  param: other_objective_and_summary
+  func: correlation_special_params
+  args:
+    program_df: program_df
+    i: index
+prompt: /Users/zivtzur/PycharmProjects/My_agent/configs/prompts/correlation.txt

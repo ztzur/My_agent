@@ -1,0 +1,68 @@
+**Instructions:**
+
+You will be provided with the following information:
+
+1. **Current Sub-Plan Objective:** A concise statement describing what the current sub-plan aims to achieve.
+2. **Current Sub-Plan Summary:** A brief overview of the current sub-plan, including its key activities and intended outcomes.
+3. **Other Related Sub-Plan Information:** A collection of objectives and summaries for other sub-plans related to the same main plan.  This will be provided as a list, where each item in the list contains:
+    *   **Related Sub-Plan Objective:** The objective of the related sub-plan.
+    *   **Related Sub-Plan Summary:** A summary of the related sub-plan.
+
+Your task is to analyze the correlation and integration between the *current* sub-plan and the *other* related sub-plans.  Consider how well the current sub-plan's objective and summary align and complement the objectives and summaries of the other sub-plans.
+
+**Scoring:**
+
+Assign a score based on the level of integration:
+
+* **5 - Full Integration:** The current sub-plan is fully integrated with all other related sub-plans.  There is complete alignment and synergy. The objectives and summaries work together seamlessly to achieve a common goal.  There is no redundancy or conflict.
+* **4 - Good Integration:** The current sub-plan is well integrated with most other related sub-plans.  There is strong alignment and good synergy.  Minor overlaps or inconsistencies may exist, but they do not significantly detract from the overall integration.
+* **3 - Partial Integration:** The current sub-plan is partially integrated with the other related sub-plans.  There is some alignment and overlap, but also areas where the sub-plans are independent or have only a weak connection.  Potential for improved integration exists.
+* **2 - Little Integration:** The current sub-plan has little integration with the other related sub-plans.  There is minimal overlap or synergy. The sub-plans primarily operate independently, and there may even be some conflicting goals or activities.
+* **1 - Difficulty in Integration:** The current sub-plan is difficult to integrate with the other related sub-plans.  There are significant conflicts, redundancies, or a lack of alignment.  Integrating these sub-plans would require substantial revisions and coordination.
+
+**Output Format:**
+
+Provide your response in the following json format and make sure the json is valid:
+
+```json
+{{
+    "Score": [Your Score (5, 4, 3, 2, or 1)],
+    "Justification": [A concise explanation of your score, referencing specific elements from the Current Sub-Plan Objective, Current Sub-Plan Summary, and the objectives and summaries of the Other Related Sub-Plans.  Clearly describe the nature and extent of the integration.  Explain *why* you chose the score you did, providing specific examples and evidence for your assessment.  Mention which sub-plans integrate well, which integrate partially, and which show little or no integration.]
+}}
+```
+
+**Example Input (Illustrative -  The actual input will be structured as described above):**
+
+```
+Current Sub-Plan Objective: To improve the digital literacy skills of senior citizens.
+Current Sub-Plan Summary: This sub-plan will offer free computer classes to senior citizens, focusing on internet safety, email communication, and basic software applications.
+
+Other Related Sub-Plans:
+[
+  {{
+    "Related_Sub_Plan_Objective": "To provide access to affordable internet for low-income households.",
+    "Related_Sub_Plan_Summary": "This sub-plan will subsidize internet service for eligible households and provide access to refurbished computers."
+  }},
+  {{
+    "Related_Sub_Plan_Objective": "To develop online educational resources for all age groups.",
+    "Related_Sub_Plan_Summary": "This sub-plan will create interactive online learning modules covering various subjects and skills."
+  }}
+]
+```
+
+**Example Output (Illustrative - The actual content would depend on the input):**
+
+```json
+{{
+    "Score": "4",
+    "Justification": "The current sub-plan (improving digital literacy for seniors) integrates well with the first related sub-plan (providing affordable internet). Access to internet is necessary for digital literacy, creating a strong synergy.  The current sub-plan also has some integration with the second related sub-plan (online educational resources), as these resources could be utilized by the seniors after developing their digital skills. However, the connection is less direct, as the online resources are for all age groups, not specifically designed for seniors. While there is strong alignment and synergy with one sub-plan and potential with the other, it's not a perfect integration as the connection to the second sub-plan is less focused.  Therefore, a score of 4 is appropriate."
+}}
+```
+
+**Input Data**
+
+Current Sub-Plan Objective: {objective}
+Current Sub-Plan Summary: {summary}
+
+Other Related Sub-Plans:
+{other_objective_and_summary}
