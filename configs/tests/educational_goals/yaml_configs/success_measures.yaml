@@ -1,0 +1,7 @@
+program_params:
+  goal: מטרה מרכזית
+  summary: תקציר תוכנית
+examination_params:
+  param: outcome
+  goals_file: measure.txt
+prompt: success_measures.txt

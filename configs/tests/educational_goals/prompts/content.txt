@@ -1,0 +1,64 @@
+```json
+{{
+  "score": "[1, 2, 3, 4, or 5]",
+  "justification": "[Explanation in Hebrew of how the score was calculated, including the analysis of the program goal and description, and their consistency with the provided list of expected programs. Be specific about the connections and any gaps or areas for improvement.]"
+}}
+```
+
+**Instructions**
+
+You will be provided with the following information:
+
+1.  **Expected Ministry of Education Programs/Responses:** A list of programs or responses that the Ministry of Education would typically expect to see in alignment with its goals. These can be examples of successful programs, desired program characteristics, or general areas of focus.
+2.  **Program Central Goal:** A concise statement describing the primary objective of the program you are evaluating.
+3.  **Program General Description:** A brief overview of the program's activities and intended outcomes.
+
+Your task is to analyze the program based on its goal and general description and determine how well it aligns with the provided list of expected programs/responses from the Ministry of Education.
+
+**Scoring Method:**
+
+1.  **Alignment Analysis:**
+    * Compare the program's central goal and general description to the characteristics and examples provided in the list of expected programs/responses.
+    * Determine the degree to which the program reflects the Ministry's typical approaches and priorities.
+2.  **Score Assignment:**
+    * Assign a score from 1 to 5, where:
+        * 1 = Very low alignment (no match with expected programs)
+        * 2 = Low alignment (limited match with expected programs)
+        * 3 = Medium alignment (partial match with expected programs)
+        * 4 = High alignment (strong match with expected programs)
+        * 5 = Very high alignment (complete and excellent match with expected programs)
+
+**Output Format:**
+
+Return your answer in JSON format exactly as shown above.
+
+* `score`: This field should contain the calculated alignment score (1-5).
+* `justification`: This field should contain an explanation in Hebrew of how the score was calculated. This explanation should detail the analysis of the program goal and description, and their consistency with the provided list of expected programs.
+
+**Example Input (Illustrative):**
+
+```
+Expected Ministry of Education Programs/Responses: [
+  "תוכניות המקדמות לימודי STEM בפריפריה",
+  "יוזמות לצמצום פערים בהישגים לימודיים",
+  "פרויקטים המשלבים טכנולוגיה חדשנית בחינוך",
+  "פעילויות להעלאת מעורבות הורים בחינוך ילדיהם"
+]
+Program Central Goal: להגביר את המוטיבציה של תלמידים מרקעים חלשים ללמוד מדעים.
+Program General Description: התוכנית תציע סדנאות העשרה, מלגות, ומנטורינג אישי לתלמידים מרקעים חלשים הלומדים בפריפריה.
+```
+
+**Example Output (Illustrative - The actual content would depend on the input):**
+
+```json
+{{
+  "score": "5",
+  "justification": "התוכנית תואמת באופן מלא את התוכניות המצופות ממשרד החינוך. היא עונה על דרישות לקידום לימודי STEM בפריפריה ולצמצום פערים בהישגים לימודיים. הסדנאות, המלגות והמנטורינג מיועדים לתלמידים מרקעים חלשים בפריפריה, וזהו בדיוק סוג התוכניות שהמשרד מעודד. לכן, הציון הוא 5."
+}}
+```
+
+*Input Data*
+
+Expected Ministry of Education Programs/Responses: {responses}
+Program Central Goal: {objective}
+Program General Description: {summary}

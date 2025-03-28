@@ -1,0 +1,62 @@
+```json
+{{
+  "score": "[1, 2, 3, 4, or 5]",
+  "justification": "[Explanation in Hebrew of how the score was calculated, including the analysis of the program goal and description and its potential impact on the provided outcome indicators. Be specific about the connections and any gaps or areas for improvement. Mention which indicators are likely to be affected by the program.]"
+}}
+```
+
+**Instructions**
+
+You will be provided with the following information:
+
+1.  **Ministry of Education Outcome Indicators:** A list of measurable indicators used to assess the success of the Ministry's goals.
+2.  **Program Central Goal:** A concise statement describing the primary objective of the program.
+3.  **Program General Description:** A brief overview of the program's activities and intended outcomes.
+
+Your task is to analyze the program based on its goal and general description and determine the extent to which it can lead to at least one of the provided outcome indicators.
+
+**Scoring Method:**
+
+1.  **Impact Analysis:**
+    * Compare the program's central goal and general description to the list of outcome indicators.
+    * Determine the degree to which the program's activities are likely to positively influence any of the indicators.
+2.  **Score Assignment:**
+    * Assign a score from 1 to 5, where:
+        * 1 = Very low likelihood (no impact on any indicators)
+        * 2 = Low likelihood (minimal impact on a few indicators)
+        * 3 = Medium likelihood (partial impact on some indicators)
+        * 4 = High likelihood (significant impact on several indicators)
+        * 5 = Very high likelihood (direct and substantial impact on most or all indicators)
+
+**Output Format:**
+
+Return your answer in JSON format exactly as shown above.
+
+* `score`: This field should contain the calculated likelihood score (1-5).
+* `justification`: This field should contain an explanation in Hebrew of how the score was calculated. This explanation should detail the analysis of the program goal and description and its potential impact on the provided outcome indicators.
+
+**Example Input (Illustrative):**
+
+```
+Ministry of Education Outcome Indicators: [
+  "עלייה בשיעור הזכאות לבגרות",
+  "עלייה במספר התלמידים במגמות טכנולוגיות",
+  "שיפור בממוצע ציוני המבחנים במקצועות הליבה",
+  "ירידה בשיעור הנשירה מבתי הספר"
+]
+Program Central Goal: להגביר את המוטיבציה של תלמידים ללמידה.
+Program General Description: התוכנית תציע מנטורינג אישי, סדנאות העשרה, ופעילויות חברתיות לתלמידים בסיכון.
+```
+
+**Example Output (Illustrative - The actual content would depend on the input):**
+
+```json
+{{
+  "score": "4",
+  "justification": "התוכנית יכולה להוביל למספר מדדי הצלחה. מנטורינג אישי וסדנאות העשרה יכולים להוביל ל'שיפור בממוצע ציוני המבחנים במקצועות הליבה' ו'עלייה בשיעור הזכאות לבגרות'. פעילויות חברתיות ומנטורינג יכולים להוביל ל'ירידה בשיעור הנשירה מבתי הספר'. ייתכן שהמוטיבציה המוגברת תגרום גם לעלייה במספר התלמידים במגמות טכנולוגיות, אך זה פחות ישיר. לכן, הציון הוא 4."
+}}
+```
+
+Ministry of Education Success Indicators: {outcome}
+Program Central Goal: {goal}
+Program General Description: {summary}

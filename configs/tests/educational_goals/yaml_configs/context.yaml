@@ -1,0 +1,7 @@
+program_params:
+  program_objective: מטרה מרכזית
+  program_summary: תקציר תוכנית
+examination_params:
+  param: education_objective
+  goals_file: objectives.txt
+prompt: context.txt

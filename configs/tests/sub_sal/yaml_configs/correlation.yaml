@@ -1,7 +1,7 @@
 program_params:
   objective: מטרה מרכזית
   summary: תקציר תוכנית
-subject_params: ''
+examination_params: ''
 special_params:
   param: other_objective_and_summary
   func: correlation_special_params

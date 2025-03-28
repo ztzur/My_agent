@@ -1,0 +1,61 @@
+```json
+{{
+  "score": "[1, 2, 3, 4, or 5]",
+  "justification": "[Explanation in Hebrew of how the score was calculated, including the analysis of the program goal and description, and their alignment with the Ministry of Education goals and objectives. Be specific about the connections and any gaps or areas for improvement.]"
+}}
+```
+
+**Instructions**
+
+You will be provided with the following information:
+
+1.  **Ministry of Education Objectives:** A list of more specific, measurable objectives that contribute to achieving the Ministry's goals.
+2.  **Program Central Goal:** A concise statement describing the primary objective of the program.
+3.  **Program General Description:** A brief overview of the program's activities and intended outcomes.
+
+Your task is to analyze the program based on its goal and general description and determine how well it aligns with the goals and objectives of the Ministry of Education.
+
+**Scoring Method:**
+
+1.  **Alignment Analysis:**
+    * Compare the program's central goal and general description to the Ministry of Education goals and objectives.
+    * Determine the degree to which the program contributes to the Ministry's strategic direction.
+2.  **Score Assignment:**
+    * Assign a score from 1 to 5, where:
+        * 1 = Very low alignment (no match)
+        * 2 = Low alignment (limited match)
+        * 3 = Medium alignment (partial match)
+        * 4 = High alignment (strong match)
+        * 5 = Very high alignment (complete and excellent match)
+
+**Output Format:**
+
+Return your answer in JSON format exactly as shown above.
+
+* `score`: This field should contain the calculated alignment score (1-5).
+* `justification`: This field should contain an explanation in Hebrew of how the score was calculated. This explanation should detail the analysis of the program goal and description, and their alignment with the Ministry of Education goals and objectives.
+
+**Example Input (Illustrative):**
+
+```
+Ministry of Education Objectives: ["הגדלת מספר תלמידים הלומדים מקצועות STEM", "צמצום פערים בהישגים בין תלמידים מרקעים שונים"]
+Program Central Goal: להגביר את המוטיבציה של תלמידים מרקעים חלשים ללמוד מדעים.
+Program General Description: התוכנית תציע סדנאות העשרה, מלגות, ומנטורינג אישי לתלמידים מרקעים חלשים.
+```
+
+**Example Output (Illustrative - The actual content would depend on the input):**
+
+```json
+{{
+  "score": "5",
+  "justification": "התוכנית תואמת באופן מלא את מטרות ויעדי משרד החינוך. התוכנית מקדמת מצוינות במדעים על ידי סדנאות העשרה ומנטורינג, וגם מגבירה שוויון הזדמנויות בחינוך על ידי מתן מלגות וסיוע לתלמידים מרקעים חלשים. היא תורמת ישירות להגדלת מספר התלמידים הלומדים מקצועות STEM ולצמצום פערים בהישגים. לכן, הציון הוא 5."
+}}
+```
+
+**Input Data**
+
+Ministry of Education Objectives:
+{education_objective}
+
+Program Central Goal: {program_objective}
+Program General Description: {program_summary}

@@ -2,7 +2,7 @@ prompt: keywords.txt
 program_params:
   program_goal: מטרה מרכזית
   program_description: תקציר תוכנית
-subject_params:
+examination_params:
   mandatory_keywords: mandatory_keywords
   general_keywords: keywords
 special_params: ''

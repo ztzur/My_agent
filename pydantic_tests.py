@@ -12,7 +12,7 @@ class TestResults(BaseModel):
     justification: str = Field(description="the justification of the test score")
 
 
-with open('configs/tests/prompts/team_competency.txt', 'r') as f:
+with open('configs/tests/sub_sal/prompts/team_competency.txt', 'r') as f:
     prompt = f.read()
 
 programs = pd.read_csv(c.programs_path)

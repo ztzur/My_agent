@@ -1,0 +1,7 @@
+prompt: goals.txt
+program_params:
+  objective: מטרה מרכזית
+  summary: תקציר תוכנית
+examination_params:
+  definition: Description
+special_params: ''

@@ -1,7 +1,7 @@
-prompt: goals.txt
+prompt: team_competency.txt
 program_params:
   objective: מטרה מרכזית
   summary: תקציר תוכנית
-subject_params:
-  definition: Description
+examination_params:
+  conditions: Min_conditions
 special_params: ''
