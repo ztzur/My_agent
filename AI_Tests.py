@@ -1,7 +1,6 @@
 import os
 import utils
 import pandas as pd
-from typing import List
 from tqdm.auto import tqdm
 import configs.general.config as c
 from multiprocessing import Pool, cpu_count
