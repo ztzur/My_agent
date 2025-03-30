@@ -1,90 +1,69 @@
 import os
+import utils
 import pandas as pd
 from typing import List
 from tqdm.auto import tqdm
 import configs.general.config as c
 from multiprocessing import Pool, cpu_count
-from utils import ask_llm, create_tests_dict
 
 
-def append_general_data_to_row(row: pd.Series, llm_answer: List[dict]) -> dict:
-    general_dict = {
-        'program_number': row['מספר תוכנית'],
-        'organization_name': row['שם ארגון'],
-        'program_name': row['שם תוכנית'],
-        'main_target': row['מטרה מרכזית'],
-        'description': row['תקציר תוכנית'],
-    }
+def aggregate_batch_results_to_df(examination_df: pd.DataFrame | None, programs_df: pd.DataFrame):
+    """
+    Loop over all the programs and simultaneously send all the information for the LLM to do the tests
+    Args:
+        examination_df (pd.DataFrame | None): The information in the context of which the plan is being examined. If None, the information should be in yaml and text files.
+        programs_df (pd.DataFrame): The programs dataframe
+    """
+    # create a dictionary that store all the information that essential for the llm in order to invoke the program different tests
+    if c.running_tests.lower() == 'all':
+        c.running_tests = c.valid_tests
+    tests_dict_list = [utils.create_tests_dict(test_name=test, test_type=c.running_tests_type) for test in c.running_tests]
 
-    if c.running_tests_type == 'sub_sal':
-        general_dict['tat_sal'] = row['תת סל']
-
-    llm_answer.insert(0, general_dict)
-    final_row = {k: v for x in llm_answer for k, v in x.items()}
-
-    return final_row
-
-
-def drop_data(df_list: List[dict]):
-    drop_df = pd.DataFrame(df_list)
-
-    if os.path.isfile(c.final_results):
-        exist_temp_df = pd.read_csv(c.final_results)
-        drop_df = pd.concat([exist_temp_df, drop_df]).reset_index(drop=True).drop_duplicates(subset=c.subset, keep='last')
-
-    drop_df.to_csv(c.final_results, index=False, encoding='utf-8-sig')
-
-
-def aggregate_batch_results_to_df(examination_df: pd.DataFrame, programs_df: pd.DataFrame, tests_list: str | List[str], limit_rows: int = None):
-    if isinstance(tests_list, str) and tests_list.lower() == 'all':
-        tests_list = c.sub_sal_valid_tests if c.running_tests_type == 'sub_sal' else c.educational_goals_valid_tests
-    tests_dict_list = [create_tests_dict(test_name=test, test_type=c.running_tests_type) for test in tests_list]
     df_list = []
     rows_counter = 0
-    if limit_rows and limit_rows < len(programs_df):
-        programs_df = programs_df.sample(limit_rows, random_state=1).reset_index(drop=True)
+
+    # in case the user want to limit the number of programs that analyzed by the llm
+    if c.programs_limit and c.programs_limit < len(programs_df):
+        programs_df = programs_df.sample(c.programs_limit, random_state=1).reset_index(drop=True)
+
+    # a loop through all the programs
     for index, row in tqdm(programs_df.iterrows(), total=programs_df.shape[0], leave=False, position=0, desc='Programs'):
+        # get the information to correlated 'tat_sal' in 'tat_sal' tests type case
         examination = examination_df[examination_df['Name'] == row['תת סל']] if c.running_tests_type == 'sub_sal' else None
+
+        # if there is more than one test to examine, there is a split into multiprocess for parallel analyzing
         if len(tests_dict_list) > 1:
             new_list = [(x, row) for x in tests_dict_list] if c.running_tests_type == 'educational_goals' else [(x, row, examination) for x in tests_dict_list]
             with Pool(processes=min(cpu_count() - 3, len(tests_dict_list))) as pool:
-                results = pool.starmap(ask_llm, new_list)
+                results = pool.starmap(utils.ask_llm, new_list)
+        # project analysis through specific test
         else:
-            results = [ask_llm(test_dict=tests_dict_list[0], program_row=row, examination_data=examination)]
+            results = [utils.ask_llm(test_dict=tests_dict_list[0], program_row=row, examination_data=examination)]
 
-        df_list.append(append_general_data_to_row(row=row, llm_answer=results))
+        df_list.append(utils.append_general_data_to_row(row=row, llm_answer=results))
 
+        # after each iteration the data been downloaded into 'final_answers' csv in case of a runtime error.
         if (c.drop_iteration and len(df_list) % c.drop_iteration == 0) or rows_counter + len(df_list) == programs_df.shape[0]:
-            drop_data(df_list=df_list)
+            utils.drop_data(df_list=df_list)
             rows_counter += c.drop_iteration
             df_list = []
 
 
 if __name__ == '__main__':
-    if c.running_tests_type not in c.valid_tests:
-        raise TypeError(f'{c.running_tests_type} is not a valid test\nPlease choose from {c.valid_tests}')
+    utils.validate_tests()  # validate that the test type and tests name is valid
+    program_df = pd.read_csv(c.programs_path) if c.programs_path.endswith('.csv') else pd.read_excel(c.programs_path)  # programs df
+    if c.remove_exists and os.path.isfile(c.final_results):  # remove all the data that already processed and located in the 'final_results' csv file
+        program_df = utils.drop_exist(df=program_df)
 
-    program_df = pd.read_csv(c.programs_path) if c.programs_path.endswith('.csv') else pd.read_excel(c.programs_path)
-    if c.remove_drops and os.path.isfile(c.final_results):
-        drop_from = pd.read_csv(c.final_results) if c.final_results.endswith('.csv') else pd.read_excel(c.final_results)
+    if c.running_tests_type == 'educational_goals':
+        program_df = program_df.drop_duplicates(subset=c.program_subset)
 
-        # Get the index of rows in `program_df` that should be dropped
-        left_on = ['מספר תוכנית', 'תת סל'] if c.running_tests_type == 'sub_sal' else ['מספר תוכנית']
-        indices_to_drop = program_df.merge(drop_from, left_on=left_on, right_on=c.subset, how='inner').index
-
-        # Drop those rows from `program_df`
-        program_df = program_df.drop(indices_to_drop)
-
+    # 'sab_sal' tests type load csv with all the 'tat sal' information
     examination_data = None
     if c.running_tests_type == 'sub_sal':
         examination_data = pd.read_csv(c.sub_sal_path) if c.sub_sal_path.endswith('.csv') else pd.read_excel(c.sub_sal_path)
 
-    limit = c.row_limit
     aggregate_batch_results_to_df(
         examination_df=examination_data,
-        programs_df=program_df,
-        tests_list=c.running_tests,
-        limit_rows=limit
+        programs_df=program_df
     )
-
-    # df.to_csv(c.dump_df, index=False, encoding='utf-8-sig')
