@@ -20,20 +20,21 @@ def validate_tests():
     """
     # test type validator
     if c.running_tests_type not in c.valid_tests_type:
-        raise TypeError(f"'{c.running_tests_type}' is not a valid test\nPlease choose from {c.valid_tests_type}")
+        c.rootLogger.critical(f"'{c.running_tests_type}' is not a valid test. Please choose from {c.valid_tests_type}")
+        exit()
 
     # tests validator in case of wrong name or not exist test
     if isinstance(c.running_tests, list):
         not_valid_tests = [test for test in c.running_tests if test not in c.valid_tests]
 
         if not_valid_tests:
-            raise TypeError(
-                f"{not_valid_tests} not a valid test\nPlease choose from {c.valid_tests}")
+            c.rootLogger.critical(f"{not_valid_tests} not a valid test. Please choose from {c.valid_tests}")
+            exit()
 
     # test validator in case of wrong 'all' option
     if isinstance(c.running_tests, str) and c.running_tests.lower() != 'all':
-        raise TypeError(
-            f"'{c.running_tests}' not a valid option\nPlease try 'all' to run al valid tests possible")
+        c.rootLogger.error(f"'{c.running_tests}' not a valid option. Please try 'all' to run al valid tests possible")
+        exit()
 
 
 def drop_exist(df: pd.DataFrame):
@@ -53,6 +54,7 @@ def drop_exist(df: pd.DataFrame):
 
     # drop those rows from `program_df`
     df = df.drop(indices_to_drop)
+    c.rootLogger.info(f"successfully removed {len(indices_to_drop)} exists records from 'programs data'")
 
     return df
 
@@ -95,13 +97,19 @@ def drop_data(df_list: List[dict]):
     """
     # convert data that collected through current iteration into df
     drop_df = pd.DataFrame(df_list)
+    drop_num = len(drop_df)
 
     # check if 'final_results' is already exist, read this csv file and drop duplicates if exist
     if os.path.isfile(c.final_results):
         exist_temp_df = pd.read_csv(c.final_results)
         drop_df = pd.concat([exist_temp_df, drop_df]).reset_index(drop=True).drop_duplicates(subset=c.examination_subset, keep='last')
 
-    drop_df.to_csv(c.final_results, index=False, encoding='utf-8-sig')
+    try:
+        drop_df.to_csv(c.final_results, index=False, encoding='utf-8-sig')
+        c.rootLogger.info(f"successfully dropped {drop_num} analyzed programs")
+
+    except Exception as e:
+        c.rootLogger.exception(f"Failed to drop {drop_num} analyzed programs: {e}")
 
 
 
@@ -140,18 +148,23 @@ def ask_llm(test_dict: dict, program_row: pd.Series, examination_data: pd.Series
         ans = chain.invoke({k: v for k, v in prompt_params.items()})
 
     # in case the model output format is not in json structure ary add another valid statement and try invoke again
-    except OutputParserException:
+    except OutputParserException as e:
         try:
+            c.rootLogger.warning(f'{e}\ntrying again')
             temp_prompt_template = test_dict['prompt'] + '\nMake sure that output format is valid!!!'
             temp_prompt = PromptTemplate.from_template(template=temp_prompt_template)
             temp_chain = temp_prompt | llm | JsonOutputParser()
             ans = temp_chain.invoke({k: v for k, v in prompt_params.items()})
 
         # in case that the model output format is steal not in json format, write this as error to a file in error directory
-        except OutputParserException:
-            with open(f"{c.errors}/{program_row['מספר תוכנית']}_{program_row['תת סל']}.txt", 'w') as f:
-                f.write(f"test: {test_dict['name']}\nprogram_name: {program_row['שם תוכנית']}\nsub subject: {program_row['תת סל']}")
-            return {}
+        except OutputParserException as e:
+            c.rootLogger.warning(f'{e}\nfailed again, dropping to an error file')
+            try:
+                with open(f"{c.errors}/{program_row['מספר תוכנית']}_{program_row['תת סל']}.txt", 'w') as f:
+                    f.write(f"test: {test_dict['name']}\nprogram_name: {program_row['שם תוכנית']}\nsub subject: {program_row['תת סל']}")
+                    return {}
+            except Exception as e:
+                c.rootLogger.exception(e)
 
     # add the test name to the final answer dictionary
     ans_plus_names = {f"{test_dict['name']}_{k}": v for k, v in ans.items()}
@@ -170,17 +183,29 @@ def create_tests_dict(test_name: str, test_type: str) -> dict:
         A dictionary with all the essential information that this test needs to be able to invoke the LLM
     """
     # read the test YAML file
-    with open(os.path.join(c.yaml, f'{test_name}.yaml'), 'r', encoding='utf-8-sig') as file:
-        total_dict = yaml.safe_load(file)
+    try:
+        with open(os.path.join(c.yaml, f'{test_name}.yaml'), 'r', encoding='utf-8-sig') as file:
+            total_dict = yaml.safe_load(file)
+
+    except Exception as e:
+        c.rootLogger.exception(e)
 
     # read the test prompt
-    with open(os.path.join(c.prompts, total_dict['prompt']), 'r', encoding="utf-8-sig") as p_file:
-        total_dict['prompt'] = p_file.read()
+    try:
+        with open(os.path.join(c.prompts, total_dict['prompt']), 'r', encoding="utf-8-sig") as p_file:
+            total_dict['prompt'] = p_file.read()
+
+    except Exception as e:
+        c.rootLogger.exception(e)
 
     # 'educational_goals' examination parameters are in text file and not csv
     if test_type == 'educational_goals':
-        with open(os.path.join(c.educational_goals_path, total_dict['examination_params']['goals_file']), 'r', encoding='utf-8-sig') as p_file:
-            total_dict['examination_params']['goals_file'] = p_file.read()
+        try:
+            with open(os.path.join(c.educational_goals_path, total_dict['examination_params']['goals_file']), 'r', encoding='utf-8-sig') as p_file:
+                total_dict['examination_params']['goals_file'] = p_file.read()
+
+        except Exception as e:
+            c.rootLogger.exception(e)
 
     total_dict['name'] = test_name
 
@@ -199,32 +224,38 @@ def connect_to_llm(endpoint: str = Literal["google", "azure"],
         The LLM model or endpoint
     """
     if endpoint == 'azure':
-        chat_llm = AzureChatOpenAI(
-            openai_api_version=os.getenv('OPENAI_API_VERSION'),
-            openai_api_key=os.getenv('OPENAI_API_KEY'),
-            azure_endpoint=os.getenv('OPENAI_API_BASE'),
-            openai_api_type=os.getenv('OPENAI_API_TYPE'),
-            model=os.getenv('MODEL_NAME'),
-            temperature=temp
-        )
+        try:
+            chat_llm = AzureChatOpenAI(
+                openai_api_version=os.getenv('OPENAI_API_VERSION'),
+                openai_api_key=os.getenv('OPENAI_API_KEY'),
+                azure_endpoint=os.getenv('OPENAI_API_BASE'),
+                openai_api_type=os.getenv('OPENAI_API_TYPE'),
+                model=os.getenv('MODEL_NAME'),
+                temperature=temp
+            )
+            return chat_llm
 
-        return chat_llm
+        except Exception as e:
+            c.rootLogger.exception(e)
 
     elif endpoint == 'google':
-        chat_llm = ChatGoogleGenerativeAI(
-            google_api_key=os.getenv('GEMINI_API_KEY'),
-            model="gemini-1.5-pro",
-            temperature=temp
-        )
+        try:
+            chat_llm = ChatGoogleGenerativeAI(
+                google_api_key=os.getenv('GEMINI_API_KEY'),
+                model="gemini-1.5-pro",
+                temperature=temp
+            )
+            return chat_llm
 
-        return chat_llm
+        except Exception as e:
+            c.rootLogger.exception(e)
 
     # elif endpoint in c.ollama_models:
     #     return OllamaLLM(model=endpoint)
 
     else:
-        raise TypeError(
-            f"'{endpoint}' is not a valid llm\nPlease choose 'google', 'azure' or ollama model from this list: {c.ollama_models}")
+        c.rootLogger.critical(f"'{endpoint}' is not a valid llm, Please choose 'google', 'azure' or ollama model from this list: {c.ollama_models}")
+        exit()
 
 
 llm = connect_to_llm(endpoint=c.endpoint)

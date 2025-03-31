@@ -1,4 +1,7 @@
+import logging
 import os
+import sys
+
 import utils
 import pandas as pd
 from tqdm.auto import tqdm
@@ -24,6 +27,7 @@ def aggregate_batch_results_to_df(examination_df: pd.DataFrame | None, programs_
     # in case the user want to limit the number of programs that analyzed by the llm
     if c.programs_limit and c.programs_limit < len(programs_df):
         programs_df = programs_df.sample(c.programs_limit, random_state=1).reset_index(drop=True)
+        c.rootLogger.info(f'successfully reduce number of programs to {c.programs_limit}')
 
     # a loop through all the programs
     for index, row in tqdm(programs_df.iterrows(), total=programs_df.shape[0], leave=False, position=0, desc='Programs'):
@@ -34,6 +38,7 @@ def aggregate_batch_results_to_df(examination_df: pd.DataFrame | None, programs_
         if len(tests_dict_list) > 1:
             new_list = [(x, row) for x in tests_dict_list] if c.running_tests_type == 'educational_goals' else [(x, row, examination) for x in tests_dict_list]
             with Pool(processes=min(cpu_count() - 3, len(tests_dict_list))) as pool:
+                c.rootLogger.info(f'split into {pool._processes} processes')
                 results = pool.starmap(utils.ask_llm, new_list)
         # project analysis through specific test
         else:
@@ -50,19 +55,27 @@ def aggregate_batch_results_to_df(examination_df: pd.DataFrame | None, programs_
 
 if __name__ == '__main__':
     utils.validate_tests()  # validate that the test type and tests name is valid
+    c.rootLogger.info(f"Running {c.running_tests} tests of type: '{c.running_tests_type}'")
+
     program_df = pd.read_csv(c.programs_path) if c.programs_path.endswith('.csv') else pd.read_excel(c.programs_path)  # programs df
+    c.rootLogger.info(f"successfully load {program_df.shape[0]} programs from 'programs data'")
+
     if c.remove_exists and os.path.isfile(c.final_results):  # remove all the data that already processed and located in the 'final_results' csv file
         program_df = utils.drop_exist(df=program_df)
 
     if c.running_tests_type == 'educational_goals':
         program_df = program_df.drop_duplicates(subset=c.program_subset)
+        c.rootLogger.info(f'there are {program_df.shape[0]} unique programs to analyze')
 
     # 'sab_sal' tests type load csv with all the 'tat sal' information
     examination_data = None
     if c.running_tests_type == 'sub_sal':
         examination_data = pd.read_csv(c.sub_sal_path) if c.sub_sal_path.endswith('.csv') else pd.read_excel(c.sub_sal_path)
+        c.rootLogger.info(f"successfully load {examination_data.shape[0]} 'tat sal' from 'tat_sal' data'")
 
     aggregate_batch_results_to_df(
         examination_df=examination_data,
         programs_df=program_df
     )
+
+    c.rootLogger.info('successfully completed all tests')
