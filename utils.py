@@ -1,7 +1,7 @@
 import os
 import yaml
 import pandas as pd
-from typing import Literal, List
+from typing import Literal
 import configs.general.config as c
 from dotenv import load_dotenv, find_dotenv
 from langchain_ollama.llms import OllamaLLM
@@ -9,7 +9,6 @@ from langchain_openai import AzureChatOpenAI
 from langchain_core.prompts import PromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.output_parsers import JsonOutputParser
-from langchain_core.exceptions import OutputParserException
 
 load_dotenv(find_dotenv())
 
@@ -79,7 +78,6 @@ def append_general_data_to_row(row: pd.Series) -> dict:
     if c.running_tests_type == 'sub_sal':
         general_dict['tat_sal'] = row['תת סל']
 
-
     return general_dict
 
 
@@ -103,7 +101,6 @@ def drop_data(drop_df: pd.DataFrame):
 
     except Exception as e:
         c.rootLogger.exception(f"Failed to drop {drop_num} analyzed programs: {e}")
-
 
 
 def ask_llm(test_dict: dict, programs_df: pd.DataFrame, examination_data: pd.DataFrame = None) -> pd.DataFrame:
@@ -146,7 +143,8 @@ def ask_llm(test_dict: dict, programs_df: pd.DataFrame, examination_data: pd.Dat
             batch = []
             general_data_list = []
 
-    batches.append((batch, general_data_list))
+    if batch:
+        batches.append((batch, general_data_list))
     final_prompt = PromptTemplate.from_template(template=test_dict['prompt'])
 
     # build the llm chain
@@ -157,13 +155,13 @@ def ask_llm(test_dict: dict, programs_df: pd.DataFrame, examination_data: pd.Dat
         df_list = []
         for b, general in batches:
             ans = chain.batch(b)
+            ans = [{f"{test_dict['name']}_{k}": v for k, v in a.items()} for a in ans]
             general_data_and_ans_list = [{**g, **a} for g, a in zip(general, ans)]
             df_list.extend(general_data_and_ans_list)
 
         final_df = pd.DataFrame(df_list)
 
         return final_df
-
 
     except Exception as e:
         print(e)
@@ -223,8 +221,8 @@ def connect_to_llm(endpoint: str = Literal["google", "azure"],
     if endpoint == 'azure':
         try:
             chat_llm = AzureChatOpenAI(
-                openai_api_version=os.getenv('OPENAI_API_VERSION'),
-                openai_api_key=os.getenv('OPENAI_API_KEY'),
+                # openai_api_version=os.getenv('OPENAI_API_VERSION'),
+                # openai_api_key=os.getenv('OPENAI_API_KEY'),
                 azure_endpoint=os.getenv('OPENAI_API_BASE'),
                 openai_api_type=os.getenv('OPENAI_API_TYPE'),
                 model=os.getenv('MODEL_NAME'),
@@ -239,7 +237,7 @@ def connect_to_llm(endpoint: str = Literal["google", "azure"],
     elif endpoint == 'google':
         try:
             chat_llm = ChatGoogleGenerativeAI(
-                google_api_key=os.getenv('GEMINI_API_KEY'),
+                # google_api_key=os.getenv('GEMINI_API_KEY'),
                 model="gemini-1.5-pro",
                 temperature=temp
             )

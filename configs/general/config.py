@@ -16,7 +16,7 @@ rootLogger.addHandler(consoleHandler)
 # --------------------------- Tests ---------------------------- #
 valid_tests_type = ['educational_goals', 'sub_sal']  # valid test type
 running_tests_type = 'sub_sal'  # current running test type
-running_tests = ['goals', 'team_competency'] # all tests for examine, type 'all' to examine all possible test
+running_tests = ['goals']  # all tests for examine, type 'all' to examine all possible test
 sub_sal_valid_tests = ['team_competency', 'content', 'keywords', 'goals']  # all 'sub_sal' possible tests
 educational_goals_valid_tests = ['content', 'context', 'success_measures']  # all 'educational_goals' possible tests
 valid_tests = sub_sal_valid_tests if running_tests_type == 'sub_sal' else educational_goals_valid_tests  # set the valid tests for this running
@@ -39,8 +39,8 @@ yaml = os.path.join(_local_path, os.path.abspath(fr'configs/tests/{running_tests
 prompts = os.path.join(_local_path,os.path.abspath(fr'configs/tests/{running_tests_type}/prompts'))  # directory of prompts files
 
 # --------------------------- Output ---------------------------- #
-programs_limit = 8  # limit number of programs to examine, type None i no limit needed
-drop_iteration = 4  # drop data every X iteration
-batch_size = 2
+programs_limit = 10  # limit number of programs to examine, type None i no limit needed
+drop_iteration = 5  # drop data every X iteration
+batch_size = 3
 final_results = os.path.join(_local_path, os.path.abspath(f'data/output/{running_tests_type}/final/final_results.csv'))  # directory of final_results file
 errors = os.path.join(_local_path, os.path.abspath(fr'data/output/{running_tests_type}/errors'))  # directory of errors files
