@@ -1,9 +1,7 @@
-import logging
 import os
-import sys
-
 import utils
 import pandas as pd
+from time import sleep
 from tqdm.auto import tqdm
 import configs.general.config as c
 from multiprocessing import Pool, cpu_count
@@ -17,40 +15,35 @@ def aggregate_batch_results_to_df(examination_df: pd.DataFrame | None, programs_
         programs_df (pd.DataFrame): The programs dataframe
     """
     # create a dictionary that store all the information that essential for the llm in order to invoke the program different tests
-    if c.running_tests.lower() == 'all':
+    if isinstance(c.running_tests, str) and c.running_tests.lower() == 'all':
         c.running_tests = c.valid_tests
     tests_dict_list = [utils.create_tests_dict(test_name=test, test_type=c.running_tests_type) for test in c.running_tests]
-
-    df_list = []
-    rows_counter = 0
 
     # in case the user want to limit the number of programs that analyzed by the llm
     if c.programs_limit and c.programs_limit < len(programs_df):
         programs_df = programs_df.sample(c.programs_limit, random_state=1).reset_index(drop=True)
         c.rootLogger.info(f'successfully reduce number of programs to {c.programs_limit}')
 
-    # a loop through all the programs
-    for index, row in tqdm(programs_df.iterrows(), total=programs_df.shape[0], leave=False, position=0, desc='Programs'):
-        # get the information to correlated 'tat_sal' in 'tat_sal' tests type case
-        examination = examination_df[examination_df['Name'] == row['תת סל']] if c.running_tests_type == 'sub_sal' else None
-
+    chunks = [programs_df[i:i + c.drop_iteration] for i in range(0, len(programs_df), c.drop_iteration)]
+    for chunk in tqdm(chunks, leave=True, position=0):
         # if there is more than one test to examine, there is a split into multiprocess for parallel analyzing
         if len(tests_dict_list) > 1:
-            new_list = [(x, row) for x in tests_dict_list] if c.running_tests_type == 'educational_goals' else [(x, row, examination) for x in tests_dict_list]
+            new_list = [(x, chunk) for x in tests_dict_list] if c.running_tests_type == 'educational_goals' else [(x, chunk, examination_df) for x in tests_dict_list]
             with Pool(processes=min(cpu_count() - 3, len(tests_dict_list))) as pool:
                 c.rootLogger.info(f'split into {pool._processes} processes')
                 results = pool.starmap(utils.ask_llm, new_list)
+                result = results[0]
+                merge_on = list(result.columns[:-2])
+                for df in results[1:]:
+                    results = pd.merge(result, df, on=merge_on, how='outer')
+
         # project analysis through specific test
         else:
-            results = [utils.ask_llm(test_dict=tests_dict_list[0], program_row=row, examination_data=examination)]
+            results = utils.ask_llm(test_dict=tests_dict_list[0], programs_df=chunk, examination_data=examination_df)
 
-        df_list.append(utils.append_general_data_to_row(row=row, llm_answer=results))
+        sleep(1)
 
-        # after each iteration the data been downloaded into 'final_answers' csv in case of a runtime error.
-        if (c.drop_iteration and len(df_list) % c.drop_iteration == 0) or rows_counter + len(df_list) == programs_df.shape[0]:
-            utils.drop_data(df_list=df_list)
-            rows_counter += c.drop_iteration
-            df_list = []
+        utils.drop_data(drop_df=results)
 
 
 if __name__ == '__main__':

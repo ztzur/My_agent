@@ -22,10 +22,10 @@ Assign a score based on the following scale:
 
 Provide your response in the following json format and make sure the json is valid:
 
-```
-{{json
-    "Score": [Your Score (5, 4, 3, 2, or 1)],
-    "Justification": [A concise explanation of your score, referencing specific elements from the Sub-Program Objective, Sub-Program Summary, and Main Program Definition. Explain *why* you chose the score you did, providing evidence for your assessment. Be specific about which aspects align and which do not.]
+```json
+{{
+    "score": [Your Score (5, 4, 3, 2, or 1)],
+    "justification": [A concise explanation of your score, referencing specific elements from the Sub-Program Objective, Sub-Program Summary, and Main Program Definition. Explain *why* you chose the score you did, providing evidence for your assessment. Be specific about which aspects align and which do not.]
 }}
 ```
 
@@ -39,10 +39,10 @@ Main Program Definition: To bridge the digital divide and ensure equitable acces
 
 **Example Output:**
 
-```
-{{json
-    "Score": "5",
-    "Justification": "The Sub-Program Objective directly and comprehensively addresses a key component of the Main Program Definition, which is bridging the digital divide by improving digital skills. The Sub-Program Summary further reinforces this alignment by detailing activities that specifically target improving digital skills (computer classes focusing on internet safety, email, and software) for a specific demographic (senior citizens) often affected by the digital divide.  The sub-program is a perfect fit as it directly contributes to the core goal of the main program."
+```json
+{{
+    "score": "5",
+    "justification": "The Sub-Program Objective directly and comprehensively addresses a key component of the Main Program Definition, which is bridging the digital divide by improving digital skills. The Sub-Program Summary further reinforces this alignment by detailing activities that specifically target improving digital skills (computer classes focusing on internet safety, email, and software) for a specific demographic (senior citizens) often affected by the digital divide.  The sub-program is a perfect fit as it directly contributes to the core goal of the main program."
 }}
 ```
 

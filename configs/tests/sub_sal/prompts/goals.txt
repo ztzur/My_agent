@@ -32,9 +32,8 @@ Provide your response in the following json format and make sure the json is val
 
 ```json
 {{
-    "Main_Program_Goals": [Main program goals (goal 1, goal 2 and goal 3)],
-    "Score": [Your Score (5, 4, 3, 2, or 1)],
-    "Justification": [A concise explanation of your score, referencing specific elements from the Sub-Program Goal, Sub-Program Summary, and the Main Program Goals you formulated. Clearly state which main program goals are addressed, partially addressed, or not addressed at all by the sub-program. Explain *why* you chose the score you did, providing evidence for your assessment.]
+    "score": [Your Score (5, 4, 3, 2, or 1)],
+    "justification": [A concise explanation of your score, referencing specific elements from the Sub-Program Goal, Sub-Program Summary, and the Main Program Goals you formulated. Clearly state which main program goals are addressed, partially addressed, or not addressed at all by the sub-program. Explain *why* you chose the score you did, providing evidence for your assessment.]
 }}
 ```
 
@@ -50,9 +49,8 @@ Main Program Definition: To bridge the digital divide and ensure equitable acces
 
 ```json
 {{
-    "Main_Program_Goals": "To increase access to technology and internet connectivity for underserved communities.", "To enhance digital literacy and skills among all citizens.", "To promote equitable participation in the digital economy.",
-    "Score": "4",
-    "Justification": "The Sub-Program Goal and Summary strongly align with Main Program Goal 2 (enhancing digital literacy and skills). The computer classes focusing on internet safety, email, and software directly contribute to this goal. While access (Goal 1) is implied by providing the classes, it's not explicitly stated that the sub-program addresses access to technology itself.  Goal 3 (participation in the digital economy) is not directly addressed by the sub-program's activities.  Therefore, while there's strong alignment with one key goal and some implicit connection to another, the sub-program doesn't fully address all three goals, resulting in a score of 4."
+    "score": "4",
+    "justification": "The Sub-Program Goal and Summary strongly align with Main Program Goal 2 (enhancing digital literacy and skills). The computer classes focusing on internet safety, email, and software directly contribute to this goal. While access (Goal 1) is implied by providing the classes, it's not explicitly stated that the sub-program addresses access to technology itself.  Goal 3 (participation in the digital economy) is not directly addressed by the sub-program's activities.  Therefore, while there's strong alignment with one key goal and some implicit connection to another, the sub-program doesn't fully address all three goals, resulting in a score of 4."
 }}
 ```
 **Input Data**

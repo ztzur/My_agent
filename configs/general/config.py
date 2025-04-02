@@ -4,25 +4,24 @@ import subprocess
 
 # -------------------------- General --------------------------- #
 _local_path = os.getcwd()
-valid_tests_type = ['educational_goals', 'sub_sal']  # valid test type
-running_tests_type = 'educational_goals'  # current running test type
-running_tests = 'all'  # all tests for examine, type 'all' to examine all possible test
 
 # ---------------------------- Log ----------------------------- #
 logFormatter = logging.Formatter("[%(levelname)s] - (%(name)s) - %(message)s")
-rootLogger = logging.getLogger()
+rootLogger = logging.getLogger(__name__)
 rootLogger.setLevel(logging.INFO)
 consoleHandler = logging.StreamHandler()
 consoleHandler.setFormatter(logFormatter)
 rootLogger.addHandler(consoleHandler)
 
 # --------------------------- Tests ---------------------------- #
+valid_tests_type = ['educational_goals', 'sub_sal']  # valid test type
+running_tests_type = 'sub_sal'  # current running test type
+running_tests = ['goals', 'team_competency'] # all tests for examine, type 'all' to examine all possible test
 sub_sal_valid_tests = ['team_competency', 'content', 'keywords', 'goals']  # all 'sub_sal' possible tests
 educational_goals_valid_tests = ['content', 'context', 'success_measures']  # all 'educational_goals' possible tests
 valid_tests = sub_sal_valid_tests if running_tests_type == 'sub_sal' else educational_goals_valid_tests  # set the valid tests for this running
 
 # ---------------------------- Data ---------------------------- #
-programs_limit = 10  # limit number of programs to examine, type None i no limit needed
 remove_exists = True  # if 'True' will remove all programs that already examined
 examination_subset = ['program_number', 'tat_sal'] if running_tests_type == 'sub_sal' else ['program_number']  # columns to drop duplicates by
 program_subset = ['מספר תוכנית', 'תת סל'] if running_tests_type == 'sub_sal' else ['מספר תוכנית']  # columns to drop program duplicates by
@@ -40,6 +39,8 @@ yaml = os.path.join(_local_path, os.path.abspath(fr'configs/tests/{running_tests
 prompts = os.path.join(_local_path,os.path.abspath(fr'configs/tests/{running_tests_type}/prompts'))  # directory of prompts files
 
 # --------------------------- Output ---------------------------- #
-drop_iteration = 5  # drop data every X iteration
+programs_limit = 8  # limit number of programs to examine, type None i no limit needed
+drop_iteration = 4  # drop data every X iteration
+batch_size = 2
 final_results = os.path.join(_local_path, os.path.abspath(f'data/output/{running_tests_type}/final/final_results.csv'))  # directory of final_results file
 errors = os.path.join(_local_path, os.path.abspath(fr'data/output/{running_tests_type}/errors'))  # directory of errors files

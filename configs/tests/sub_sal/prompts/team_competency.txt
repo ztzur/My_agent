@@ -24,8 +24,8 @@ Provide your response in the following json format and make sure the json is val
 
 ```json
 {{
-    "Score": [Your Score (5, 4, 3, 2, or 1)],
-    "Justification": [A concise explanation of your score, referencing specific elements from the Sub-Program Objective, Sub-Program Summary, and Main Program Threshold Conditions. Clearly state which threshold conditions are met, partially met, or not met at all. Explain *why* you chose the score you did, providing evidence for your assessment.  Be specific about which requirements overlap and which do not.]
+    "score": [Your Score (5, 4, 3, 2, or 1)],
+    "justification": [A concise explanation of your score, referencing specific elements from the Sub-Program Objective, Sub-Program Summary, and Main Program Threshold Conditions. Clearly state which threshold conditions are met, partially met, or not met at all. Explain *why* you chose the score you did, providing evidence for your assessment.  Be specific about which requirements overlap and which do not.]
 }}
 ```
 
@@ -45,8 +45,8 @@ Main Program Threshold Conditions:
 
 ```json
 {{
-    "Score": "5",
-    "Justification": "The Sub-Program Summary clearly states that the training will be led by "certified instructors," fulfilling the first threshold condition. The training duration is specified as "40 hours," exceeding the minimum requirement of "30 hours," thus satisfying the second condition. The summary mentions that participants will "receive certification upon completion," matching the third threshold condition. Finally, the training covering modules A, B, and C fulfills the last threshold condition. Since all threshold conditions are met identically, the score is 5."
+    "score": "5",
+    "justification": "The Sub-Program Summary clearly states that the training will be led by "certified instructors," fulfilling the first threshold condition. The training duration is specified as "40 hours," exceeding the minimum requirement of "30 hours," thus satisfying the second condition. The summary mentions that participants will "receive certification upon completion," matching the third threshold condition. Finally, the training covering modules A, B, and C fulfills the last threshold condition. Since all threshold conditions are met identically, the score is 5."
 }}
 ```
 
@@ -65,8 +65,8 @@ Main Program Threshold Conditions:
 
 ```json
 {{
-    "Score": "2",
-    "Justification": "The Sub-Program Summary describes "online tutoring sessions," which does not meet the requirement of "in-person" tutoring at "designated community centers." The requirement of tutors having a "bachelor's degree" is not met by "some college experience." The Sub-Program information doesn't mention the range of subjects covered. Only the general concept of "educational resources" overlaps, but not the specific requirements. Therefore, the score is 2."
+    "score": "2",
+    "justification": "The Sub-Program Summary describes "online tutoring sessions," which does not meet the requirement of "in-person" tutoring at "designated community centers." The requirement of tutors having a "bachelor's degree" is not met by "some college experience." The Sub-Program information doesn't mention the range of subjects covered. Only the general concept of "educational resources" overlaps, but not the specific requirements. Therefore, the score is 2."
 ```
 **Input Data**
 

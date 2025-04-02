@@ -26,8 +26,8 @@ Provide your response in the following json format and make sure the json is val
 
 ```json
 {{
-    "Score": [Your Score (5, 4, 3, 2, or 1)],
-    "Justification": [A concise explanation of your score, referencing specific elements from the Current Sub-Plan Objective, Current Sub-Plan Summary, and the objectives and summaries of the Other Related Sub-Plans.  Clearly describe the nature and extent of the integration.  Explain *why* you chose the score you did, providing specific examples and evidence for your assessment.  Mention which sub-plans integrate well, which integrate partially, and which show little or no integration.]
+    "score": [Your Score (5, 4, 3, 2, or 1)],
+    "justification": [A concise explanation of your score, referencing specific elements from the Current Sub-Plan Objective, Current Sub-Plan Summary, and the objectives and summaries of the Other Related Sub-Plans.  Clearly describe the nature and extent of the integration.  Explain *why* you chose the score you did, providing specific examples and evidence for your assessment.  Mention which sub-plans integrate well, which integrate partially, and which show little or no integration.]
 }}
 ```
 
@@ -54,8 +54,8 @@ Other Related Sub-Plans:
 
 ```json
 {{
-    "Score": "4",
-    "Justification": "The current sub-plan (improving digital literacy for seniors) integrates well with the first related sub-plan (providing affordable internet). Access to internet is necessary for digital literacy, creating a strong synergy.  The current sub-plan also has some integration with the second related sub-plan (online educational resources), as these resources could be utilized by the seniors after developing their digital skills. However, the connection is less direct, as the online resources are for all age groups, not specifically designed for seniors. While there is strong alignment and synergy with one sub-plan and potential with the other, it's not a perfect integration as the connection to the second sub-plan is less focused.  Therefore, a score of 4 is appropriate."
+    "score": "4",
+    "justification": "The current sub-plan (improving digital literacy for seniors) integrates well with the first related sub-plan (providing affordable internet). Access to internet is necessary for digital literacy, creating a strong synergy.  The current sub-plan also has some integration with the second related sub-plan (online educational resources), as these resources could be utilized by the seniors after developing their digital skills. However, the connection is less direct, as the online resources are for all age groups, not specifically designed for seniors. While there is strong alignment and synergy with one sub-plan and potential with the other, it's not a perfect integration as the connection to the second sub-plan is less focused.  Therefore, a score of 4 is appropriate."
 }}
 ```
 
