@@ -103,38 +103,33 @@ def drop_data(drop_df: pd.DataFrame):
         c.rootLogger.exception(f"Failed to drop {drop_num} analyzed programs: {e}")
 
 
-def ask_llm(test_dict: dict, programs_df: pd.DataFrame, examination_data: pd.DataFrame = None) -> pd.DataFrame:
+def ask_llm(test_dict: dict, programs_df: pd.DataFrame, examination_data: pd.DataFrame = None, llm=None) -> pd.DataFrame:
     """
     Aggregate essential information using the test dictionary and invoke the LLM
     Args:
         test_dict (dict): A dictionary with all the essential information that this test needs to be able to invoke the LLM
         programs_df (pd.DataFrame): The program df
         examination_data (pd.DataFrame): The examination information. If None, the information should be store within the test dictionary
+        llm: the llm object that was created once.
 
     Returns:
         A dictionary with the LLM answer contain the score, the justification and more keys if needed
     """
-    llm = connect_to_llm(endpoint=c.endpoint)
+    if llm is None:
+        raise ValueError("LLM object must be provided.")
+
     general_data_list = []
     batch = []
     batches = []
     for index, row in programs_df.iterrows():
-        # get the information to correlated 'tat_sal' in 'tat_sal' tests type case
         examination = examination_data[examination_data['Name'] == row['תת סל']] if c.running_tests_type == 'sub_sal' else None
-
-        # parameters for the prompt source in the program data
         program_params = {k: row[v] for k, v in test_dict['program_params'].items()} if test_dict['program_params'] else {}
-
-        # parameters for the prompt source in the examination data
         examination_params = {}
         if test_dict['examination_params']:
-            # the specific data columns or files located in each test YAML file
             if c.running_tests_type == 'sub_sal':
                 examination_params = {k: examination[v] for k, v in test_dict['examination_params'].items()}
             elif c.running_tests_type == 'educational_goals':
                 examination_params = {test_dict['examination_params']['param']: test_dict['examination_params']['goals_file']}
-
-        # combine the different parameters into final prompt
         prompt_params = {**program_params, **examination_params}
         batch.append({k: v for k, v in prompt_params.items()})
         general_data_list.append(append_general_data_to_row(row=row))
@@ -142,15 +137,11 @@ def ask_llm(test_dict: dict, programs_df: pd.DataFrame, examination_data: pd.Dat
             batches.append((batch, general_data_list))
             batch = []
             general_data_list = []
-
     if batch:
         batches.append((batch, general_data_list))
     final_prompt = PromptTemplate.from_template(template=test_dict['prompt'])
-
-    # build the llm chain
     chain = final_prompt | llm | JsonOutputParser()
 
-    # try invoke the llm
     try:
         df_list = []
         for b, general in batches:
@@ -158,11 +149,8 @@ def ask_llm(test_dict: dict, programs_df: pd.DataFrame, examination_data: pd.Dat
             ans = [{f"{test_dict['name']}_{k}": v for k, v in a.items()} for a in ans]
             general_data_and_ans_list = [{**g, **a} for g, a in zip(general, ans)]
             df_list.extend(general_data_and_ans_list)
-
         final_df = pd.DataFrame(df_list)
-
         return final_df
-
     except Exception as e:
         print(e)
 
